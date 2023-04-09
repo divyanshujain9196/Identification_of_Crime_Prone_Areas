@@ -1,0 +1,50 @@
+# Load the dataset
+df = pd.read_csv('crime_data.csv')
+
+# Remove irrelevant columns
+df.drop(['Event Id', 'Circle name', 'Police Station', 'Caller source', 'Event Type', 'Event sub-type', 'Data of crime'], axis=1, inplace=True)
+
+# Check for missing values
+df.isnull().sum()
+
+# Create a GeoDataFrame from the latitude and longitude columns
+geometry = [Point(xy) for xy in zip(df['Longitude'], df['Latitude'])]
+crs = {'init': 'epsg:4326'}
+gdf = gpd.GeoDataFrame(df, crs=crs, geometry=geometry)
+
+# Perform kernel density estimation to identify crime hotspots
+kernel = 'gau'
+bandwidth = 0.005
+gdf['density'] = kernel_density(gdf['geometry'], kernel=kernel, bandwidth=bandwidth)
+
+# Create new features from the latitude and longitude columns
+police_stations = gpd.read_file('police_stations.geojson')
+parks = gpd.read_file('parks.geojson')
+schools = gpd.read_file('schools.geojson')
+
+gdf['distance_to_police'] = nearest_points(gdf['geometry'], police_stations.unary_union)[0].distance(gdf['geometry'])
+gdf['distance_to_park'] = nearest_points(gdf['geometry'], parks.unary_union)[0].distance(gdf['geometry'])
+gdf['distance_to_school'] = nearest_points(gdf['geometry'], schools.unary_union)[0].distance(gdf['geometry'])
+
+# Split the data into training and testing sets
+X = gdf[['Latitude', 'Longitude', 'distance_to_police', 'distance_to_park', 'distance_to_school']]
+y = gdf['density']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Train the machine learning model
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Make predictions on new data
+new_data = pd.DataFrame({'Latitude': [34.0522], 'Longitude': [-118.2437], 'distance_to_police': [0.01], 'distance_to_park': [0.005], 'distance_to_school': [0.02]})
+prediction = model.predict(new_data)
+
+# Visualize the results on a web interface
+# (Code for web interface will depend on the specific library used)
+
+
+# for shape file convert
+ogr2ogr -f GeoJSON output_file.geojson input_file.shp
+
+pip install pandas geopandas scikit-learn shapely

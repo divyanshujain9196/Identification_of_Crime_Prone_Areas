@@ -1,0 +1,54 @@
+
+import pandas as pd
+
+# Import the dataset
+crimes = pd.read_csv('Crimes_-_2001_to_present.csv')
+
+# Drop duplicates and missing values
+crimes = crimes.drop_duplicates()
+crimes = crimes.dropna()
+
+# Convert date and time columns to datetime format
+crimes['Date'] = pd.to_datetime(crimes['Date'])
+crimes['Time'] = pd.to_datetime(crimes['Time'], format='%H:%M:%S').dt.time
+
+# Create new features
+crimes['DayOfWeek'] = crimes['Date'].dt.dayofweek
+crimes['HourOfDay'] = crimes['Time'].apply(lambda x: x.hour)
+crimes['Month'] = crimes['Date'].dt.month
+
+
+# Select relevant features
+features = ['Latitude', 'Longitude', 'DayOfWeek', 'HourOfDay', 'Month']
+X = crimes[features]
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, crimes['Primary Type'], test_size=0.2, random_state=42)
+
+# Train the random forest classifier
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+
+# Evaluate the performance of the model
+accuracy = rf.score(X_test, y_test)
+print(f'Accuracy: {accuracy}')
+
+
+# Predict the likelihood of a crime occurring at a given location
+def predict_crime(latitude, longitude, day_of_week, hour_of_day, month):
+    features = [[latitude, longitude, day_of_week, hour_of_day, month]]
+    prediction = rf.predict_proba(features)[0]
+    return prediction[1]
+
+# Example usage
+latitude = 41.881832
+longitude = -87.623177
+day_of_week = 1
+hour_of_day = 14
+month = 3
+prediction = predict_crime(latitude, longitude, day_of_week, hour_of_day, month)
+print(f'Likelihood of a crime occurring:
+
