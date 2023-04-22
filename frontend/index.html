@@ -1,59 +1,55 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Crime Rate Predictor</title>
-    <style>
-      /* Define the style for the form */
-      form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 50px;
-      }
-      
-      /* Define the style for the input fields */
-      input[type="text"] {
-        width: 200px;
-        padding: 10px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-      }
-      
-      /* Define the style for the submit button */
-      input[type="submit"] {
-        width: 100px;
-        padding: 10px;
-        border-radius: 5px;
-        border: none;
-        background-color: #4CAF50;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      
-      /* Define the style for the result */
-      #result {
-        margin-top: 50px;
-        font-size: 24px;
-        font-weight: bold;
-      }
-    </style>
+    <title>Crime Prone Area Predictor</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h1>Crime Rate Predictor</h1>
-    <form>
+    <h1>Crime Prone Area Predictor</h1>
+    <form onsubmit="handleFormSubmit(event)">
       <label for="latitude">Latitude:</label>
-      <input type="text" id="latitude" name="latitude" placeholder="Enter latitude...">
+      <input type="text" id="latitude" name="latitude">
+
       <label for="longitude">Longitude:</label>
-      <input type="text" id="longitude" name="longitude" placeholder="Enter longitude...">
-      <label for="population">Population:</label>
-      <input type="text" id="population" name="population" placeholder="Enter population...">
-      <label for="median_income">Median Income:</label>
-      <input type="text" id="median_income" name="median_income" placeholder="Enter median income...">
-      <input type="submit" value="Predict">
+      <input type="text" id="longitude" name="longitude">
+
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date">
+
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="time">
+
+      <input type="submit" value="Submit">
     </form>
-    <div id="result"></div>
-    <script src="main.js"></script>
+    
+    <script>
+      function handleFormSubmit(event) {
+        event.preventDefault(); // Prevent the default form submit action
+        const latitude = document.getElementById("latitude").value;
+        const longitude = document.getElementById("longitude").value;
+        const date = document.getElementById("date").value;
+        const time = document.getElementById("time").value;
+        console.log(`Latitude: ${latitude}`);
+        console.log(`Longitude: ${longitude}`);
+        console.log(`Date: ${date}`);
+        console.log(`Time: ${time}`);
+        
+        // Call the backend service with the input values
+        const modelInput = { latitude, longitude, date, time };
+        fetch('/api/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(modelInput)
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          // Use the model output as needed here
+        })
+        .catch(error => console.error(error));
+      }
+    </script>
   </body>
 </html>
