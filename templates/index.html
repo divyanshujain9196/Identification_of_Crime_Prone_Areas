@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Location and Time Input</title>
+    <style>
+      /* Style for the form labels */
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+      
+      /* Style for the input fields */
+      input {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        margin-bottom: 20px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      
+      /* Style for the submit button */
+      input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      /* Style for the page title */
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+      }
+      
+      /* Style for the form container */
+      form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Location and Time Input</h1>
+    <form action="./predict" method="post">
+      <label for="latitude">Latitude:</label>
+      <input type="text" id="latitude" name="latitude">
+
+      <label for="longitude">Longitude:</label>
+      <input type="text" id="longitude" name="longitude">
+
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date">
+
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="time">
+
+      <input type="submit" value="Submit">
+    </form>
+
+    <br>
+    <br>
+    <h2 style="color:violet"> 
+      {{prediction_text}}
+    </h2>
+    
+  </body>
+</html>
