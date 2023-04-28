@@ -37,8 +37,12 @@ def predict():
 #     response = {
 #         'crime_rate': float(prediction[0])
 #     }
-
-    return render_template('index.html',prediction_text='Probability of this area is crime or not is {}'.format(output))
+    if output > float(70):
+        return render_template('index.html',
+                               prediction_text='Probability of this area is crime or not is {} \n  so This is a Crime Prone Area'.format(
+                                   output))
+    else:
+        return render_template('index.html',prediction_text='Probability of this area is crime or not is {} \n  so This si not a Crime Prone Area'.format(output))
 
 
 if __name__ == '__main__':
