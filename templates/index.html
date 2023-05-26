@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Location and Time Input</title>
+    <title>Identification of Crime Prone Areas</title>
     <style>
       /* Style for the form labels */
       label {
@@ -50,28 +50,28 @@
     </style>
   </head>
   <body>
-    <h1>Location and Time Input</h1>
+    <h1>Identification of Crime Prone Areas</h1>
     <form action="./predict" method="post">
       <label for="latitude">Latitude:</label>
-      <input type="text" id="latitude" name="latitude">
+      <input type="number" step="0.0000001" id="latitude" name="latitude" required>
 
       <label for="longitude">Longitude:</label>
-      <input type="text" id="longitude" name="longitude">
+      <input type="number" step="0.0000001" id="longitude" name="longitude" required>
 
       <label for="date">Date:</label>
-      <input type="date" id="date" name="date">
+      <input type="date" id="date" required>
 
       <label for="time">Time:</label>
-      <input type="time" id="time" name="time">
+      <input type="time" id="time" required>
 
       <input type="submit" value="Submit">
     </form>
 
     <br>
     <br>
-    <h2 style="color:violet"> 
+    <center><h2 style="color:violet"> 
       {{prediction_text}}
-    </h2>
+    </h2></center>
     
   </body>
 </html>
